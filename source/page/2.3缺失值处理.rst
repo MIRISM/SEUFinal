@@ -21,6 +21,7 @@ pandas中主要使用 np.nan 来代替缺失值，它默认不包含在计算当
  df['toy'].isna()
 
 2. 替换缺失值：fillna函数
+_____________________________
 filla参数列表::
 
  DataFrame.fillna(self, value=None, method=None, axis=None, inplace=False, limit=None, downcast=None, **kwargs)
