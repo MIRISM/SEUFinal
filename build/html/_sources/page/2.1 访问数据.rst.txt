@@ -1,0 +1,49 @@
+.. final term documentation master file, created by
+   sphinx-quickstart on Wed Jun  3 23:09:49 2020.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+
+
+2.1 访问数据
+==================================
+
+在利用tushare获取完数据后，下面我们来对数据进行一些访问操作。为展示方便，这里
+
+首先展示如何查看头部和尾部的行::
+
+ df.head() #默认输出前五行
+ df.tail(3) #输出最后三行
+
+展示行索引、列索引::
+ 
+ df.index
+ df.columns
+
+利用describe()可以快速看到数据的汇总统计::
+
+ df.describe()
+
+返回值包括：
+
+* count：计数
+* mean：平均值
+* std：标准差
+* min：最小值
+* 25%：第一个四分位点
+* 50%：中位数
+* 75%：最后一个四分位点
+* max：最大值
+
+转置数据::
+
+ df.T
+ 
+按轴排序::
+
+ df.sort_index(axis=1,ascending=False) #按columns降序
+
+按值排序::
+
+ df.sort_values(by='B') #默认ascending = 0

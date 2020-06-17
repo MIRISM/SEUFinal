@@ -1,0 +1,44 @@
+.. final term documentation master file, created by
+   sphinx-quickstart on Wed Jun  3 23:09:49 2020.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+
+
+1.2 如何安装Tushare
+==================================
+
+情况一：已有Anaconda环境
+------------------------------------
+如果Python中已经安装了Anaconda环境，可以直接在Anaconda Prompt（命令行环境）里，输入::
+
+   pip install tushare
+
+就可以在PcCharm或者Spyder这两集成开发环境里直接输入::
+
+    import tushare as ts
+
+使用了。
+
+
+情况二：未安装Anaconda环境
+------------------------------------
+
+（1）注册Tushare用户，获取token
+注册网页链接为： https://tushare.pro/register?reg=369571
+注册完成后可以在个人主页的接口TOKEN下看到自己的token
+
+
+（2）安装Tushare
+在命令行环境中输入::
+
+  pip install tushare -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+
+（3）在集成开发环境中调用::
+
+  import tushare as ts
+  
+  
+  

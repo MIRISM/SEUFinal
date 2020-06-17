@@ -1,0 +1,32 @@
+.. final term documentation master file, created by
+   sphinx-quickstart on Wed Jun  3 23:09:49 2020.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+
+
+2.5 数据的写入与读取
+==================================
+在实际操作中，Excel文件和CSV文件通常为使用较多的两种，因此本部分只对这两种文件进行操作介绍
+
+1.Execel
+_______________________
+读取Excel文件::
+ 
+ x1 = 'C:/Users/iris/Desktop/HOPE/GDP.xlsx'   //''内填文件地址，注意地址中'\'需要换成'/',否则会报错，下同
+ df1 = pd.read_excel(x1,sheet_name=number)    //number填工作簿中sheet的序号
+ 
+写入Excel文件::
+
+ df1.to_excel('C:/Users/iris/Desktop/HOPE/D1.xlsx',index=False)    //括号内可直接填写希望保存位置的地址，index=False表示不再额外添加索引列
+
+2. CSV
+_____________________
+读取CSV文件::
+
+ pd.read_csv('foo.csv')         //''内文件名，但此种方法只针对CSV文件已和python文件放于同一文件夹时有效，否则参见上条Excel用法
+
+写入CSV文件::
+
+ df.to_csv('foo.csv')

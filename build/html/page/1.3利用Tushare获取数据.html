@@ -1,0 +1,515 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>1.3 利用Tushare获取数据 &#8212; 14517101孟馨怡  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.1 访问数据" href="2.1访问数据.html" />
+    <link rel="prev" title="1.2 如何安装Tushare" href="1.2如何安装Tushare环境.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="tushare">
+<h1>1.3 利用Tushare获取数据<a class="headerlink" href="#tushare" title="Permalink to this headline">¶</a></h1>
+<p>本节着重介绍如何利用Tushare获取想要的金融数据，考虑到篇幅限制和数据的常用度，这里只介绍获取交易数据、股票分类数据和基本面数据的获取方式。其他投资参考数据、宏观经济数据、新闻事件数据等的获取，可以参考http://www.tushare.org</p>
+<div class="section" id="id1">
+<h2>1. 交易数据<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>（1）交易行情<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>获取个股历史交易数据（包括均线数据），可以通过参数设置获取日k线、周k线、月k线，以及5分钟、15分钟、30分钟和60分钟k线数据。本接口只能获取近3年的日线数据，适合搭配均线数据进行选股和分析，如果需要全部历史数据，可以调用下一个接口get_h_data()。</p>
+<p>调用方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_hist_data</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="nb">type</span><span class="p">,</span><span class="n">retry_count</span><span class="p">,</span><span class="n">pause</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>参数说明：</p>
+<ul class="simple">
+<li>code：股票代码,即6位数字代码，或者指数代码（sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板）</li>
+<li>start：开始日期，格式YYYY-MM-DD</li>
+<li>end：结束日期，格式YYYY-MM-DD</li>
+<li>ktype：数据类型，D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟，默认为D</li>
+<li>retry_count：当网络异常后重试次数，默认为3</li>
+<li>pause:重试时停顿秒数，默认为0</li>
+</ul>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>date：日期</li>
+<li>open：开盘价</li>
+<li>high：最高价</li>
+<li>close：收盘价</li>
+<li>low：最低价</li>
+<li>volume：成交量</li>
+<li>price_change：价格变动</li>
+<li>p_change：涨跌幅</li>
+<li>ma5：5日均价</li>
+<li>ma10：10日均价</li>
+<li>ma20:20日均价</li>
+<li>v_ma5:5日均量</li>
+<li>v_ma10:10日均量</li>
+<li>v_ma20:20日均量</li>
+<li>turnover:换手率[注：指数无此项]</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>（2）复权数据<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>获取历史复权数据，分为前复权和后复权数据，接口提供股票上市以来所有历史数据，默认为前复权。如果不设定开始和结束日期，则返回近一年的复权数据，从性能上考虑，推荐设定开始日期和结束日期，而且最好不要超过三年以上，获取全部历史数据，请分年段分步获取，取到数据后，请及时在本地存储。获取个股首个上市日期，请参考以下方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_stock_basics</span><span class="p">()</span>
+<span class="n">date</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="s1">&#39;600848&#39;</span><span class="p">][</span><span class="s1">&#39;timeToMarket&#39;</span><span class="p">]</span> <span class="c1">#上市日期YYYYMMDD</span>
+</pre></div>
+</div>
+<p>本接口还提供大盘指数的全部历史数据，调用时，请务必设定index参数为True,由于大盘指数不存在复权的问题，故可以忽略autype参数:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">get_h_data</span><span class="p">(</span><span class="s1">&#39;002337&#39;</span><span class="p">)</span> <span class="c1">#前复权</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_h_data</span><span class="p">(</span><span class="s1">&#39;002337&#39;</span><span class="p">,</span> <span class="n">autype</span><span class="o">=</span><span class="s1">&#39;hfq&#39;</span><span class="p">)</span> <span class="c1">#后复权</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_h_data</span><span class="p">(</span><span class="s1">&#39;002337&#39;</span><span class="p">,</span> <span class="n">autype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="c1">#不复权</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_h_data</span><span class="p">(</span><span class="s1">&#39;002337&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2015-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2015-03-16&#39;</span><span class="p">)</span> <span class="c1">#两个日期之间的前复权数据</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_h_data</span><span class="p">(</span><span class="s1">&#39;399106&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#深圳综合指数</span>
+</pre></div>
+</div>
+<p>参数说明：</p>
+<ul class="simple">
+<li>code:string,股票代码 e.g. 600848</li>
+<li>start:string,开始日期 format：YYYY-MM-DD 为空时取当前日期</li>
+<li>end:string,结束日期 format：YYYY-MM-DD 为空时取去年今日</li>
+<li>autype:string,复权类型，qfq-前复权 hfq-后复权 None-不复权，默认为qfq</li>
+<li>index:Boolean，是否是大盘指数，默认为False</li>
+<li>retry_count : int, 默认3,如遇网络等问题重复执行的次数</li>
+<li>pause : int, 默认 0,重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题</li>
+</ul>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>date : 交易日期 (index)</li>
+<li>open : 开盘价</li>
+<li>high : 最高价</li>
+<li>close : 收盘价</li>
+<li>low : 最低价</li>
+<li>volume : 成交量</li>
+<li>amount : 成交金额</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>（3）实时行情<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>一次性获取当前交易所有股票的行情数据（如果是节假日，即为上一交易日，结果显示速度取决于网速）:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_today_all</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>code：代码</li>
+<li>name:名称</li>
+<li>changepercent:涨跌幅</li>
+<li>trade:现价</li>
+<li>open:开盘价</li>
+<li>high:最高价</li>
+<li>low:最低价</li>
+<li>settlement:昨日收盘价</li>
+<li>volume:成交量</li>
+<li>turnoverratio:换手率</li>
+<li>amount:成交金额</li>
+<li>per:市盈率</li>
+<li>pb:市净率</li>
+<li>mktcap:总市值</li>
+<li>nmc:流通市值</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>（4）实时分笔<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>获取实时分笔数据，可以实时取得股票当前报价和成交信息，其中一种场景是，写一个python定时程序来调用本接口（可两三秒执行一次，性能与行情软件基本一致），然后通过DataFrame的矩阵计算实现交易监控，可实时监测交易量和价格的变化。</p>
+<p>调用方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_realtime_quotes</span><span class="p">(</span><span class="s1">&#39;000581&#39;</span><span class="p">)</span> <span class="c1">#Single stock symbol</span>
+<span class="n">df</span><span class="p">[[</span><span class="s1">&#39;code&#39;</span><span class="p">,</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="s1">&#39;price&#39;</span><span class="p">,</span><span class="s1">&#39;bid&#39;</span><span class="p">,</span><span class="s1">&#39;ask&#39;</span><span class="p">,</span><span class="s1">&#39;volume&#39;</span><span class="p">,</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span><span class="s1">&#39;time&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>参数说明：</p>
+<ul class="simple">
+<li>symbols：6位数字股票代码，或者指数代码（sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板） 可输入的类型：str、list、set或者pandas的Series对象</li>
+</ul>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>name，股票名字</li>
+<li>open，今日开盘价</li>
+<li>pre_close，昨日收盘价</li>
+<li>price，当前价格</li>
+<li>high，今日最高价</li>
+<li>low，今日最低价</li>
+<li>bid，竞买价，即“买一”报价</li>
+<li>ask，竞卖价，即“卖一”报价</li>
+<li>volume，成交量 maybe you need do volume/100</li>
+<li>amount，成交金额（元 CNY）</li>
+<li>b1_v，委买一（笔数 bid volume）</li>
+<li>b1_p，委买一（价格 bid price）</li>
+<li>b2_v，“买二”</li>
+<li>b2_p，“买二”</li>
+<li>b3_v，“买三”</li>
+<li>b3_p，“买三”</li>
+<li>b4_v，“买四”</li>
+<li>b4_p，“买四”</li>
+<li>b5_v，“买五”</li>
+<li>b5_p，“买五”</li>
+<li>a1_v，委卖一（笔数 ask volume）</li>
+<li>a1_p，委卖一（价格 ask price）</li>
+</ul>
+<p>…</p>
+<ul class="simple">
+<li>date，日期；</li>
+<li>time，时间；</li>
+</ul>
+<p>请求多个股票方法（一次最好不要超过30个）:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#symbols from a list</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_realtime_quotes</span><span class="p">([</span><span class="s1">&#39;600848&#39;</span><span class="p">,</span><span class="s1">&#39;000980&#39;</span><span class="p">,</span><span class="s1">&#39;000981&#39;</span><span class="p">])</span>
+<span class="c1">#from a Series</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_realtime_quotes</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>  <span class="c1">#一次获取10个股票的实时分笔数据</span>
+</pre></div>
+</div>
+<p>获取实时指数:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#上证指数</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_realtime_quotes</span><span class="p">(</span><span class="s1">&#39;sh&#39;</span><span class="p">)</span>
+<span class="c1">#上证指数 深圳成指 沪深300指数 上证50 中小板 创业板</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_realtime_quotes</span><span class="p">([</span><span class="s1">&#39;sh&#39;</span><span class="p">,</span><span class="s1">&#39;sz&#39;</span><span class="p">,</span><span class="s1">&#39;hs300&#39;</span><span class="p">,</span><span class="s1">&#39;sz50&#39;</span><span class="p">,</span><span class="s1">&#39;zxb&#39;</span><span class="p">,</span><span class="s1">&#39;cyb&#39;</span><span class="p">])</span>
+<span class="c1">#或者混搭</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_realtime_quotes</span><span class="p">([</span><span class="s1">&#39;sh&#39;</span><span class="p">,</span><span class="s1">&#39;600848&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>（5）大盘指数行情列表<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>获取大盘指数实时行情列表，以表格的形式展示大盘指数实时行情。</p>
+<p>调用方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_index</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>code:指数代码</li>
+<li>name:指数名称</li>
+<li>change:涨跌幅</li>
+<li>open:开盘点位</li>
+<li>preclose:昨日收盘点位</li>
+<li>close:收盘点位</li>
+<li>high:最高点位</li>
+<li>low:最低点位</li>
+<li>volume:成交量(手)</li>
+<li>amount:成交金额（亿元）</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>2. 分类数据<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<p>分类数据提供股票的分类信息数据，从股票类型的不同角度进行数据分类，在一些统计套利方法的应用中，时常会以股票的分类来做切入，比如对某些行业或概念进行阶段统计来决定近期的交易策略等。</p>
+<div class="section" id="id8">
+<h3>（1）行业分类<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>在现实交易中，经常会按行业统计股票的涨跌幅或资金进出，本接口按照sina财经对沪深股票进行的行业分类，返回所有股票所属行业的信息。</p>
+<p>调用方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_industry_classified</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>code：股票代码</li>
+<li>name：股票名称</li>
+<li>c_name：行业名称</li>
+</ul>
+</div>
+<div class="section" id="id9">
+<h3>（2）概念分类<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>返回股票概念的分类数据，现实的二级市场交易中，经常会以”概念”来炒作，在数据分析过程中，可根据概念分类监测资金等信息的变动情况。</p>
+<p>调用方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_concept_classified</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>code：股票代码</li>
+<li>name：股票名称</li>
+<li>c_name：概念名称</li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h3>（3）中小板分类<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p>获取中小板股票数据，即查找所有002开头的股票:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_sme_classified</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id11">
+<h3>（4）创业板分类<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<p>获取创业板股票数据，即查找所有300开头的股票:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_gem_classified</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id12">
+<h3>（5）沪深300成份、上证50成分股、中证500成分股<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>调用方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_hs300s</span><span class="p">()</span><span class="o">/</span><span class="n">sz50s</span><span class="p">()</span><span class="o">/</span><span class="n">zz500s</span><span class="p">()</span> <span class="c1">#分别代表沪深300成份、上证50成分股、中证500成分股</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id13">
+<h2>3. 基本面数据<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
+<p>基本面类数据提供所有股票的基本面情况，包括股本情况、业绩预告和业绩报告等。</p>
+<div class="section" id="id14">
+<h3>（1）股票列表<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<p>获取沪深上市公司基本情况。属性包括：</p>
+<ul class="simple">
+<li>code,代码</li>
+<li>name,名称</li>
+<li>industry,所属行业</li>
+<li>area,地区</li>
+<li>pe,市盈率</li>
+<li>outstanding,流通股本(亿)</li>
+<li>totals,总股本(亿)</li>
+<li>totalAssets,总资产(万)</li>
+<li>liquidAssets,流动资产</li>
+<li>fixedAssets,固定资产</li>
+<li>reserved,公积金</li>
+<li>reservedPerShare,每股公积金</li>
+<li>esp,每股收益</li>
+<li>bvps,每股净资</li>
+<li>pb,市净率</li>
+<li>timeToMarket,上市日期</li>
+<li>undp,未分利润</li>
+<li>perundp, 每股未分配</li>
+<li>rev,收入同比(%)</li>
+<li>profit,利润同比(%)</li>
+<li>gpr,毛利率(%)</li>
+<li>npr,净利润率(%)</li>
+<li>holders,股东人数</li>
+</ul>
+<p>调用方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get_stock_basics</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id15">
+<h3>（2）业绩报告（主表）<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<p>按年度、季度获取业绩报表数据:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">get_report_data</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="c1">#获取2014年第三季度的业绩报表数据</span>
+</pre></div>
+</div>
+<p>返回值说明：</p>
+<ul class="simple">
+<li>code,代码</li>
+<li>name,名称</li>
+<li>esp,每股收益</li>
+<li>eps_yoy,每股收益同比(%)</li>
+<li>bvps,每股净资产</li>
+<li>roe,净资产收益率(%)</li>
+<li>epcf,每股现金流量(元)</li>
+<li>net_profits,净利润(万元)</li>
+<li>profits_yoy,净利润同比(%)</li>
+<li>distrib,分配方案</li>
+<li>report_date,发布日期</li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h3>（3）盈利能力<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<p>按年度、季度获取盈利能力数据:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">get_profit_data</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="c1">#获取2014年第三季度盈利数据</span>
+</pre></div>
+</div>
+<p>返回数据属性：</p>
+<ul class="simple">
+<li>code,代码</li>
+<li>name,名称</li>
+<li>roe,净资产收益率(%)</li>
+<li>net_profit_ratio,净利率(%)</li>
+<li>gross_profit_rate,毛利率(%)</li>
+<li>net_profits,净利润(万元)</li>
+<li>esp,每股收益</li>
+<li>business_income,营业收入(百万元)</li>
+<li>bips,每股主营业务收入(元)</li>
+</ul>
+</div>
+<div class="section" id="id17">
+<h3>（4）营运能力<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<p>按年度、季度获取营运能力数据:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">get_operation_data</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>返回数据属性：</p>
+<ul class="simple">
+<li>code,代码</li>
+<li>name,名称</li>
+<li>arturnover,应收账款周转率(次)</li>
+<li>arturndays,应收账款周转天数(天)</li>
+<li>inventory_turnover,存货周转率(次)</li>
+<li>inventory_days,存货周转天数(天)</li>
+<li>currentasset_turnover,流动资产周转率(次)</li>
+<li>currentasset_days,流动资产周转天数(天)code,代码</li>
+<li>name,名称</li>
+<li>arturnover,应收账款周转率(次)</li>
+<li>arturndays,应收账款周转天数(天)</li>
+<li>inventory_turnover,存货周转率(次)</li>
+<li>inventory_days,存货周转天数(天)</li>
+<li>currentasset_turnover,流动资产周转率(次)</li>
+<li>currentasset_days,流动资产周转天数(天)</li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h3>（5）成长能力<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<p>按年度、季度获取成长能力数据:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">get_growth_data</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>返回数据属性：</p>
+<ul class="simple">
+<li>code,代码</li>
+<li>name,名称</li>
+<li>mbrg,主营业务收入增长率(%)</li>
+<li>nprg,净利润增长率(%)</li>
+<li>nav,净资产增长率</li>
+<li>targ,总资产增长率</li>
+<li>epsg,每股收益增长率</li>
+<li>seg,股东权益增长率</li>
+</ul>
+</div>
+<div class="section" id="id19">
+<h3>（6）偿债能力<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<p>按年度、季度获取偿债能力数据:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">get_debtpaying_data</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>返回数据属性：</p>
+<ul class="simple">
+<li>code,代码</li>
+<li>name,名称</li>
+<li>currentratio,流动比率</li>
+<li>quickratio,速动比率</li>
+<li>cashratio,现金比率</li>
+<li>icratio,利息支付倍数</li>
+<li>sheqratio,股东权益比率</li>
+<li>adratio,股东权益增长率</li>
+</ul>
+</div>
+<div class="section" id="id20">
+<h3>（7）现金流量<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<p>按年度、季度获取现金流量数据:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">get_cashflow_data</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>返回数据属性：</p>
+<ul class="simple">
+<li>code,代码</li>
+<li>name,名称</li>
+<li>cf_sales,经营现金净流量对销售收入比率</li>
+<li>rateofreturn,资产的经营现金流量回报率</li>
+<li>cf_nm,经营现金净流量与净利润的比率</li>
+<li>cf_liabilities,经营现金净流量对负债比率</li>
+<li>cashflowratio,现金流量比率</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">14517101孟馨怡</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1.1什么是Tushare.html">1.1 什么是Tushare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2如何安装Tushare环境.html">1.2 如何安装Tushare</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1.3 利用Tushare获取数据</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">1. 交易数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">2. 分类数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">3. 基本面数据</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2.1访问数据.html">2.1 访问数据</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.2选择.html">2.2 选择</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.3缺失值处理.html">2.3 缺失值处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.4合并.html">2.4 合并</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.5数据的写入与读取.html">2.5 数据的写入与读取</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Paragraph1.html">第一章 Tushare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="第二章Pandas.html">第二章 pandas</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="1.2如何安装Tushare环境.html" title="previous chapter">1.2 如何安装Tushare</a></li>
+      <li>Next: <a href="2.1访问数据.html" title="next chapter">2.1 访问数据</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Xinyi Meng.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="../_sources/page/1.3利用Tushare获取数据.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

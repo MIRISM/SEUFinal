@@ -1,0 +1,232 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>2.4 合并 &#8212; final term  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>2.4 合并<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>pandas通过各种索引设置逻辑和关系代数功能，为连接/合并Series、DataFrame、Panel提供了各种方法。</p>
+<div class="section" id="concat">
+<h2>1. Concat<a class="headerlink" href="#concat" title="Permalink to this headline">¶</a></h2>
+<p>利用 concat()连接pandas对象:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">df</span>
+         <span class="mi">0</span>         <span class="mi">1</span>         <span class="mi">2</span>         <span class="mi">3</span>
+<span class="mi">0</span> <span class="o">-</span><span class="mf">0.548702</span>  <span class="mf">1.467327</span> <span class="o">-</span><span class="mf">1.015962</span> <span class="o">-</span><span class="mf">0.483075</span>
+<span class="mi">1</span>  <span class="mf">1.637550</span> <span class="o">-</span><span class="mf">1.217659</span> <span class="o">-</span><span class="mf">0.291519</span> <span class="o">-</span><span class="mf">1.745505</span>
+<span class="mi">2</span> <span class="o">-</span><span class="mf">0.263952</span>  <span class="mf">0.991460</span> <span class="o">-</span><span class="mf">0.919069</span>  <span class="mf">0.266046</span>
+<span class="mi">3</span> <span class="o">-</span><span class="mf">0.709661</span>  <span class="mf">1.669052</span>  <span class="mf">1.037882</span> <span class="o">-</span><span class="mf">1.705775</span>
+<span class="mi">4</span> <span class="o">-</span><span class="mf">0.919854</span> <span class="o">-</span><span class="mf">0.042379</span>  <span class="mf">1.247642</span> <span class="o">-</span><span class="mf">0.009920</span>
+<span class="mi">5</span>  <span class="mf">0.290213</span>  <span class="mf">0.495767</span>  <span class="mf">0.362949</span>  <span class="mf">1.548106</span>
+<span class="mi">6</span> <span class="o">-</span><span class="mf">1.131345</span> <span class="o">-</span><span class="mf">0.089329</span>  <span class="mf">0.337863</span> <span class="o">-</span><span class="mf">0.945867</span>
+<span class="mi">7</span> <span class="o">-</span><span class="mf">0.932132</span>  <span class="mf">1.956030</span>  <span class="mf">0.017587</span> <span class="o">-</span><span class="mf">0.016692</span>
+<span class="mi">8</span> <span class="o">-</span><span class="mf">0.575247</span>  <span class="mf">0.254161</span> <span class="o">-</span><span class="mf">1.143704</span>  <span class="mf">0.215897</span>
+<span class="mi">9</span>  <span class="mf">1.193555</span> <span class="o">-</span><span class="mf">0.077118</span> <span class="o">-</span><span class="mf">0.408530</span> <span class="o">-</span><span class="mf">0.862495</span>
+
+<span class="c1"># 切片</span>
+<span class="n">pieces</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">7</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="mi">7</span><span class="p">:]]</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">pieces</span><span class="p">)</span>
+         <span class="mi">0</span>         <span class="mi">1</span>         <span class="mi">2</span>         <span class="mi">3</span>
+<span class="mi">0</span> <span class="o">-</span><span class="mf">0.548702</span>  <span class="mf">1.467327</span> <span class="o">-</span><span class="mf">1.015962</span> <span class="o">-</span><span class="mf">0.483075</span>
+<span class="mi">1</span>  <span class="mf">1.637550</span> <span class="o">-</span><span class="mf">1.217659</span> <span class="o">-</span><span class="mf">0.291519</span> <span class="o">-</span><span class="mf">1.745505</span>
+<span class="mi">2</span> <span class="o">-</span><span class="mf">0.263952</span>  <span class="mf">0.991460</span> <span class="o">-</span><span class="mf">0.919069</span>  <span class="mf">0.266046</span>
+<span class="mi">3</span> <span class="o">-</span><span class="mf">0.709661</span>  <span class="mf">1.669052</span>  <span class="mf">1.037882</span> <span class="o">-</span><span class="mf">1.705775</span>
+<span class="mi">4</span> <span class="o">-</span><span class="mf">0.919854</span> <span class="o">-</span><span class="mf">0.042379</span>  <span class="mf">1.247642</span> <span class="o">-</span><span class="mf">0.009920</span>
+<span class="mi">5</span>  <span class="mf">0.290213</span>  <span class="mf">0.495767</span>  <span class="mf">0.362949</span>  <span class="mf">1.548106</span>
+<span class="mi">6</span> <span class="o">-</span><span class="mf">1.131345</span> <span class="o">-</span><span class="mf">0.089329</span>  <span class="mf">0.337863</span> <span class="o">-</span><span class="mf">0.945867</span>
+<span class="mi">7</span> <span class="o">-</span><span class="mf">0.932132</span>  <span class="mf">1.956030</span>  <span class="mf">0.017587</span> <span class="o">-</span><span class="mf">0.016692</span>
+<span class="mi">8</span> <span class="o">-</span><span class="mf">0.575247</span>  <span class="mf">0.254161</span> <span class="o">-</span><span class="mf">1.143704</span>  <span class="mf">0.215897</span>
+<span class="mi">9</span>  <span class="mf">1.193555</span> <span class="o">-</span><span class="mf">0.077118</span> <span class="o">-</span><span class="mf">0.408530</span> <span class="o">-</span><span class="mf">0.862495</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="join">
+<h2>2. Join<a class="headerlink" href="#join" title="Permalink to this headline">¶</a></h2>
+<p>类似于SQL的合并（数据库风格）:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">left</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">],</span> <span class="s1">&#39;lval&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]})</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">],</span> <span class="s1">&#39;rval&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]})</span>
+
+<span class="n">left</span>
+  <span class="n">key</span>  <span class="n">lval</span>
+<span class="mi">0</span>  <span class="n">foo</span>     <span class="mi">1</span>
+<span class="mi">1</span>  <span class="n">foo</span>     <span class="mi">2</span>
+
+<span class="n">right</span>
+  <span class="n">key</span>  <span class="n">rval</span>
+<span class="mi">0</span>  <span class="n">foo</span>     <span class="mi">4</span>
+<span class="mi">1</span>  <span class="n">foo</span>     <span class="mi">5</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">)</span>    <span class="c1">#根据&#39;key&#39;列进行合并</span>
+   <span class="n">key</span>  <span class="n">lval</span>  <span class="n">rval</span>
+<span class="mi">0</span>  <span class="n">foo</span>     <span class="mi">1</span>     <span class="mi">4</span>
+<span class="mi">1</span>  <span class="n">foo</span>     <span class="mi">1</span>     <span class="mi">5</span>
+<span class="mi">2</span>  <span class="n">foo</span>     <span class="mi">2</span>     <span class="mi">4</span>
+<span class="mi">3</span>  <span class="n">foo</span>     <span class="mi">2</span>     <span class="mi">5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="append">
+<h2>3.Append（追加）<a class="headerlink" href="#append" title="Permalink to this headline">¶</a></h2>
+<p>添加一行到DataFrame上:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">])</span>
+<span class="n">df</span>
+         <span class="n">A</span>         <span class="n">B</span>         <span class="n">C</span>         <span class="n">D</span>
+<span class="mi">0</span>  <span class="mf">1.346061</span>  <span class="mf">1.511763</span>  <span class="mf">1.627081</span> <span class="o">-</span><span class="mf">0.990582</span>
+<span class="mi">1</span> <span class="o">-</span><span class="mf">0.441652</span>  <span class="mf">1.211526</span>  <span class="mf">0.268520</span>  <span class="mf">0.024580</span>
+<span class="mi">2</span> <span class="o">-</span><span class="mf">1.577585</span>  <span class="mf">0.396823</span> <span class="o">-</span><span class="mf">0.105381</span> <span class="o">-</span><span class="mf">0.532532</span>
+<span class="mi">3</span>  <span class="mf">1.453749</span>  <span class="mf">1.208843</span> <span class="o">-</span><span class="mf">0.080952</span> <span class="o">-</span><span class="mf">0.264610</span>
+<span class="mi">4</span> <span class="o">-</span><span class="mf">0.727965</span> <span class="o">-</span><span class="mf">0.589346</span>  <span class="mf">0.339969</span> <span class="o">-</span><span class="mf">0.693205</span>
+<span class="mi">5</span> <span class="o">-</span><span class="mf">0.339355</span>  <span class="mf">0.593616</span>  <span class="mf">0.884345</span>  <span class="mf">1.591431</span>
+<span class="mi">6</span>  <span class="mf">0.141809</span>  <span class="mf">0.220390</span>  <span class="mf">0.435589</span>  <span class="mf">0.192451</span>
+<span class="mi">7</span> <span class="o">-</span><span class="mf">0.096701</span>  <span class="mf">0.803351</span>  <span class="mf">1.715071</span> <span class="o">-</span><span class="mf">0.708758</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#ignore_index = True无视原有index索引，重新整理新的index</span>
+         <span class="n">A</span>         <span class="n">B</span>         <span class="n">C</span>         <span class="n">D</span>
+<span class="mi">0</span>  <span class="mf">1.346061</span>  <span class="mf">1.511763</span>  <span class="mf">1.627081</span> <span class="o">-</span><span class="mf">0.990582</span>
+<span class="mi">1</span> <span class="o">-</span><span class="mf">0.441652</span>  <span class="mf">1.211526</span>  <span class="mf">0.268520</span>  <span class="mf">0.024580</span>
+<span class="mi">2</span> <span class="o">-</span><span class="mf">1.577585</span>  <span class="mf">0.396823</span> <span class="o">-</span><span class="mf">0.105381</span> <span class="o">-</span><span class="mf">0.532532</span>
+<span class="mi">3</span>  <span class="mf">1.453749</span>  <span class="mf">1.208843</span> <span class="o">-</span><span class="mf">0.080952</span> <span class="o">-</span><span class="mf">0.264610</span>
+<span class="mi">4</span> <span class="o">-</span><span class="mf">0.727965</span> <span class="o">-</span><span class="mf">0.589346</span>  <span class="mf">0.339969</span> <span class="o">-</span><span class="mf">0.693205</span>
+<span class="mi">5</span> <span class="o">-</span><span class="mf">0.339355</span>  <span class="mf">0.593616</span>  <span class="mf">0.884345</span>  <span class="mf">1.591431</span>
+<span class="mi">6</span>  <span class="mf">0.141809</span>  <span class="mf">0.220390</span>  <span class="mf">0.435589</span>  <span class="mf">0.192451</span>
+<span class="mi">7</span> <span class="o">-</span><span class="mf">0.096701</span>  <span class="mf">0.803351</span>  <span class="mf">1.715071</span> <span class="o">-</span><span class="mf">0.708758</span>
+<span class="mi">8</span>  <span class="mf">1.453749</span>  <span class="mf">1.208843</span> <span class="o">-</span><span class="mf">0.080952</span> <span class="o">-</span><span class="mf">0.264610</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="merge">
+<h2>4.Merge<a class="headerlink" href="#merge" title="Permalink to this headline">¶</a></h2>
+<p>pandas库中自带一个合并函数，功能强大:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">left_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">validate</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>参数如下：</p>
+<ul class="simple">
+<li>left: 拼接的左侧DataFrame对象</li>
+<li>right: 拼接的右侧DataFrame对象</li>
+<li>on: 要加入的列或索引级别名称。 必须在左侧和右侧DataFrame对象中找到。 如果未传递且left_index和right_index为False，则DataFrame中的列的交集将被推断为连接键。</li>
+<li>left_on:左侧DataFrame中的列或索引级别用作键。 可以是列名，索引级名称，也可以是长度等于DataFrame长度的数组。</li>
+<li>right_on: 左侧DataFrame中的列或索引级别用作键。 可以是列名，索引级名称，也可以是长度等于DataFrame长度的数组。</li>
+<li>left_index: 如果为True，则使用左侧DataFrame中的索引（行标签）作为其连接键。 对于具有MultiIndex（分层）的DataFrame，级别数必须与右侧DataFrame中的连接键数相匹配。</li>
+<li>right_index: 与left_index功能相似。</li>
+</ul>
+<p><a href="#id2"><span class="problematic" id="id3">*</span></a>how: One of ‘left’, ‘right’, ‘outer’, ‘inner’. 默认inner。inner是取交集，outer取并集。比如left：[‘A’,‘B’,‘C’];right[’’A,‘C’,‘D’]；inner取交集的话，left中出现的A会和right中出现的买一个A进行匹配拼接，如果没有是B，在right中没有匹配到，则会丢失。’outer’取并集，出现的A会进行一一匹配，没有同时出现的会将缺失的部分添加缺失值。
+* sort: 按字典顺序通过连接键对结果DataFrame进行排序。 默认为True，设置为False将在很多情况下显着提高性能。
+* suffixes: 用于重叠列的字符串后缀元组。 默认为（‘x’，’ y’）。
+* copy: 始终从传递的DataFrame对象复制数据（默认为True），即使不需要重建索引也是如此。
+* indicator:将一列添加到名为_merge的输出DataFrame，其中包含有关每行源的信息。 _merge是分类类型，并且对于其合并键仅出现在“左”DataFrame中的观察值，取得值为left_only，对于其合并键仅出现在“右”DataFrame中的观察值为right_only，并且如果在两者中都找到观察点的合并键，则为left_only。</p>
+<p>实例:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">left</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K1&#39;</span><span class="p">,</span> <span class="s1">&#39;K2&#39;</span><span class="p">,</span> <span class="s1">&#39;K3&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">,</span> <span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A3&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;B0&#39;</span><span class="p">,</span> <span class="s1">&#39;B1&#39;</span><span class="p">,</span> <span class="s1">&#39;B2&#39;</span><span class="p">,</span> <span class="s1">&#39;B3&#39;</span><span class="p">]})</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K1&#39;</span><span class="p">,</span> <span class="s1">&#39;K2&#39;</span><span class="p">,</span> <span class="s1">&#39;K3&#39;</span><span class="p">],</span>
+                       <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="s1">&#39;C3&#39;</span><span class="p">],</span>
+                       <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span> <span class="s1">&#39;D1&#39;</span><span class="p">,</span> <span class="s1">&#39;D2&#39;</span><span class="p">,</span> <span class="s1">&#39;D3&#39;</span><span class="p">]})</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">)</span>
+
+<span class="c1"># on参数传递的key作为连接键</span>
+<span class="n">result</span>
+
+   <span class="n">A</span>   <span class="n">B</span> <span class="n">key</span>   <span class="n">C</span>   <span class="n">D</span>
+<span class="mi">0</span>  <span class="n">A0</span>  <span class="n">B0</span>  <span class="n">K0</span>  <span class="n">C0</span>  <span class="n">D0</span>
+<span class="mi">1</span>  <span class="n">A1</span>  <span class="n">B1</span>  <span class="n">K1</span>  <span class="n">C1</span>  <span class="n">D1</span>
+<span class="mi">2</span>  <span class="n">A2</span>  <span class="n">B2</span>  <span class="n">K2</span>  <span class="n">C2</span>  <span class="n">D2</span>
+<span class="mi">3</span>  <span class="n">A3</span>  <span class="n">B3</span>  <span class="n">K3</span>  <span class="n">C3</span>  <span class="n">D3</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">final term</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Xinyi Meng.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/2.4合并.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,140 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>2.5 数据的写入与读取 &#8212; 14517101孟馨怡  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="第一章 Tushare" href="Paragraph1.html" />
+    <link rel="prev" title="2.4 合并" href="2.4合并.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>2.5 数据的写入与读取<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>在实际操作中，Excel文件和CSV文件通常为使用较多的两种，因此本部分只对这两种文件进行操作介绍</p>
+<div class="section" id="execel">
+<h2>1.Execel<a class="headerlink" href="#execel" title="Permalink to this headline">¶</a></h2>
+<p>读取Excel文件:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>x1 = &#39;C:/Users/iris/Desktop/HOPE/GDP.xlsx&#39;   //&#39;&#39;内填文件地址，注意地址中&#39;\&#39;需要换成&#39;/&#39;,否则会报错，下同
+df1 = pd.read_excel(x1,sheet_name=number)    //number填工作簿中sheet的序号
+</pre></div>
+</div>
+<p>写入Excel文件:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>df1.to_excel(&#39;C:/Users/iris/Desktop/HOPE/D1.xlsx&#39;,index=False)    //括号内可直接填写希望保存位置的地址，index=False表示不再额外添加索引列
+</pre></div>
+</div>
+</div>
+<div class="section" id="csv">
+<h2>2. CSV<a class="headerlink" href="#csv" title="Permalink to this headline">¶</a></h2>
+<p>读取CSV文件:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pd.read_csv(&#39;foo.csv&#39;)         //&#39;&#39;内文件名，但此种方法只针对CSV文件已和python文件放于同一文件夹时有效，否则参见上条Excel用法
+</pre></div>
+</div>
+<p>写入CSV文件:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;foo.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">14517101孟馨怡</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1.1什么是Tushare.html">1.1 什么是Tushare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2如何安装Tushare环境.html">1.2 如何安装Tushare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3利用Tushare获取数据.html">1.3 利用Tushare获取数据</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.1访问数据.html">2.1 访问数据</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.2选择.html">2.2 选择</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.3缺失值处理.html">2.3 缺失值处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.4合并.html">2.4 合并</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2.5 数据的写入与读取</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#execel">1.Execel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#csv">2. CSV</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Paragraph1.html">第一章 Tushare</a></li>
+<li class="toctree-l1"><a class="reference internal" href="第二章Pandas.html">第二章 pandas</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="2.4合并.html" title="previous chapter">2.4 合并</a></li>
+      <li>Next: <a href="Paragraph1.html" title="next chapter">第一章 Tushare</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Xinyi Meng.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="../_sources/page/2.5数据的写入与读取.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

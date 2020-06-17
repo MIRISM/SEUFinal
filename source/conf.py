@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'final term'
+project = '14517101孟馨怡'
 copyright = '2020, Xinyi Meng'
 author = 'Xinyi Meng'
 
@@ -95,7 +95,7 @@ html_static_path = ['_static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {}
+ #html_sidebars = {}
 
 
 # -- Options for HTMLHelp output ---------------------------------------------

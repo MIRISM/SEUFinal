@@ -1,0 +1,65 @@
+.. final term documentation master file, created by
+   sphinx-quickstart on Wed Jun  3 23:09:49 2020.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+
+
+2.3 缺失值处理
+==================================
+pandas中主要使用 np.nan 来代替缺失值，它默认不包含在计算当中。
+对待缺失值通常有三种处理方法：1）数据补齐：用平均值、中位数、众数等来填充 2）删除缺失行：视数据量大小决定 3）暂不处理
+
+1. 判断缺失值：isna函数
+--------------------------------
+判断df中所有值是否为NA::
+ 
+ df.isna()
+
+判断某一列（series格式）的值是否为NA::
+ df['toy'].isna()
+
+2. 替换缺失值：fillna函数
+filla参数列表::
+
+ DataFrame.fillna(self, value=None, method=None, axis=None, inplace=False, limit=None, downcast=None, **kwargs)
+ 
+fillna默认参数。传入值，填充所有NA,如::
+ 
+ df.fillna(0)
+
+设定每列NA的填充值。value为字典格式，如::
+ 
+ values = {'A': 0, 'B': 1, 'C': 2, 'D': 3}
+ 
+用前向值/后向值填充NA。method='fillna'表示NA被前一个值填充::
+
+ df.fillna(method='ffill')
+
+3. 删除缺失值：dropna函数
+---------------------------
+dropna函数列表::
+
+ DataFrame.dropna(self, axis=0, how='any', thresh=None, subset=None, inplace=False)
+
+dropna默认参数。删除含有NA的行。其中axis=0表示删除行，how='any'表示有一个NA就删除整行/列::
+
+ df.dropna()
+
+删除含有NA的列。参数axis=1或axis='columns'::
+ 
+ df.dropna(axis='columns')
+ 
+当所有行/列为NA时才删除。参数how='all'::
+
+ df.dropna(how='all')
+ 
+提高删除NA的阈值。参数thresh=2，表示行/列中的NA数量大于2才删除::
+
+ df.dropna(thresh=2)
+
+将处理后的df替换原本的df。参数inplace=True::
+ 
+ df.dropna(inplace=True)
+ 

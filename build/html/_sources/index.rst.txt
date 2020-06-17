@@ -10,11 +10,10 @@ Welcome to final term's documentation!
    :maxdepth: 2
    :caption: Contents:
    :glob:
-
+   
+    
    page/*
-  
-
-
+   
 
 Indices and tables
 ==================
@@ -22,3 +21,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+
+ 
